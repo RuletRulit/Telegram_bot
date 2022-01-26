@@ -35,13 +35,67 @@ bot = telebot.TeleBot(API_TOKEN)
 app = fastapi.FastAPI()
 
 
-# @app.post(f'/{API_TOKEN}/')
-# def process_webhook(update: dict):
-#     if update:
-#         update = telebot.types.Update.de_json(update)
-#         bot.process_new_updates([update])
-#     else:
-#         return
+@app.post(f'/{API_TOKEN}/')
+def process_webhook(update: dict):
+    if update:
+        update = telebot.types.Update.de_json(update)
+        bot.process_new_updates([update])
+    else:
+        return
+
+
+@bot.message_handler(commands=['start'])
+def welcome(message):
+    bot.send_message(message, text="""Common issues:
+#
+# ● CANNOT FIGURE OUT HOW
+#   STAKING WORKS? ●
+#
+# Check out this detailed guide of how
+# to stake! :
+#
+# https://ksmstarter.medium.com/kst-staking-is-live-72a65b422c5c
+#
+# ● LOST WITH UPCOMING IDOS? ●
+#
+# Make sure to go ahead and enter
+# their chats!
+# Enter /upcoming to get the list of
+# telegram chats
+# Or you can just join the
+# announcement channel here:
+#
+# https://t.me/KSM_starterANN
+#
+# ● HAVING TROUBLES WITH WEBSITE WORKING POORLY? ●
+#
+# Try clearing cache and refreshing the
+# webpage, if still doesn't help then
+# check the instructions below!
+# Who knows maybe you'll find out the
+# answer!
+#
+#
+#
+# If these weren't helpful please enter
+# your issue.
+#
+# Your feedback MUST include:
+#
+# 1. Type of problem ( metamask,
+#    staking etc.)
+# 2. Detailed description.
+# 3. OPTIONAL: a screenshot of the
+#    issue itself.
+#     """)
+
+
+@bot.message_handler(commands=['update'])
+def coming_soon(message):
+    bot.send_message(message, text="""
+#     ● CHEESUS ●
+#     https://t.me/KSM_starter/119294
+#     """)
 
 
 # @bot.message_handler(commands=['send_bug'])
@@ -51,18 +105,17 @@ def send_bug(message, report):
 
 bot.polling(none_stop=True)
 
-# Remove webhook, it fails sometimes the set if there is a previous webhook
-# bot.remove_webhook()
 
-# Set webhook
-# bot.set_webhook(url=WEBHOOK_URL_BASE + WEBHOOK_URL_PATH,
-#                 certificate=open(WEBHOOK_SSL_CERT, 'r'))
+bot.remove_webhook()
 
-# app =
-# uvicorn.run(
-#     app,
-#     host=WEBHOOK_LISTEN,
-#     port=WEBHOOK_PORT,
-#     ssl_certfile=WEBHOOK_SSL_CERT,
-#     ssl_keyfile=WEBHOOK_SSL_PRIV
-# )
+
+bot.set_webhook(url=WEBHOOK_URL_BASE + WEBHOOK_URL_PATH,
+                certificate=open(WEBHOOK_SSL_CERT, 'r'))
+
+uvicorn.run(
+    app,
+    host=WEBHOOK_LISTEN,
+    port=WEBHOOK_PORT,
+    ssl_certfile=WEBHOOK_SSL_CERT,
+    ssl_keyfile=WEBHOOK_SSL_PRIV
+)
